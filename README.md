@@ -9,6 +9,7 @@
 
 - Extract products from Ali Express
 - Easy to use
+- Download from https://pypi.org/project/AliProductExtractor
 
 
 
@@ -51,5 +52,4 @@ if __name__ == "__main__":
     print(data)
 
 ```
-
 
