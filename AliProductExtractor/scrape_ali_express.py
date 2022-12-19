@@ -48,9 +48,9 @@ class AliExpress:
         return f'{"{"}\nvariant:{self.variant}, \ndescriptionL{self.description}, \nvideo:{ self.video }, \nimages:{self.images} , \ntitle:{self.title},\n\n specification:{self.specification} {"}"}'
 
 
-def aliExtractor(url, browser: WebDriver) -> AliExpress:
-    browser = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()))
+def aliExtractor(url, browser: WebDriver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()))) -> AliExpress:
+
     pattern_price = r"^[^-]*$"
     aliExpressData = AliExpress()
 
