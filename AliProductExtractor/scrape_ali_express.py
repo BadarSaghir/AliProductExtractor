@@ -9,17 +9,15 @@ import re
 import time
 import os
 from selenium.webdriver.chrome.options import Options
-
-
 from webdriver_manager.chrome import ChromeDriverManager
 from typing import TypedDict
-
 chrome_options = Options()
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")  # linux only
 chrome_options.add_argument("--headless")
 
+USA_SEARCH = '?spm=a2g0o.detail.0.0.4e3048beiFDUoE&gps-id=pcDetailBottomMoreThisSeller&scm=1007.13339.291025.0&scm_id=1007.13339.291025.0&scm-url=1007.13339.291025.0&pvid=605d10f0-cf77-4b61-a51c-e4eaff32a7b2&_t=gps-id%3ApcDetailBottomMoreThisSeller%2Cscm-url%3A1007.13339.291025.0%2Cpvid%3A605d10f0-cf77-4b61-a51c-e4eaff32a7b2%2Ctpp_buckets%3A668%232846%238107%231934&pdp_ext_f=%7B"sku_id"%3A"12000025917204937"%2C"sceneId"%3A"3339"%7D&pdp_npi=2%40dis%21PKR%217770.36%215439.25%21%21%21%21%21%402101f6b516712770955781365e5cbb%2112000025917204937%21rec&gatewayAdapt=glo2usa4itemAdapt&_randl_shipto=US'
 class TextMatch(object):
     def __init__(self, locator, regexp):
         self.locator = locator
@@ -56,13 +54,24 @@ class AliExpress:
 
 
 def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_options,
-        service=Service(ChromeDriverManager().install()))) -> AliExpress:
-    print("started....")
+                                                            service=Service(ChromeDriverManager().install())), default_location=True) -> AliExpress:
+    # print("started....")
     pattern_price = r"^[^-]*$"
     aliExpressData = AliExpress()
+    pattern = r"^https://www?\.?aliexpress\.us/item/\d+\.html\??.*$"
+
+    if re.match(pattern, url):
+        pass
+    else:
+        print("URL does not match the pattern. Please Provide Ali express product url")
+        return aliExpressData
+    if default_location:
+        pass
+    else:
+        USA_SEARCH = ''
 
     browser.get(
-        f'{url}?spm=a2g0o.detail.0.0.4e3048beiFDUoE&gps-id=pcDetailBottomMoreThisSeller&scm=1007.13339.291025.0&scm_id=1007.13339.291025.0&scm-url=1007.13339.291025.0&pvid=605d10f0-cf77-4b61-a51c-e4eaff32a7b2&_t=gps-id%3ApcDetailBottomMoreThisSeller%2Cscm-url%3A1007.13339.291025.0%2Cpvid%3A605d10f0-cf77-4b61-a51c-e4eaff32a7b2%2Ctpp_buckets%3A668%232846%238107%231934&pdp_ext_f=%7B"sku_id"%3A"12000025917204937"%2C"sceneId"%3A"3339"%7D&pdp_npi=2%40dis%21PKR%217770.36%215439.25%21%21%21%21%21%402101f6b516712770955781365e5cbb%2112000025917204937%21rec&gatewayAdapt=glo2usa4itemAdapt&_randl_shipto=US')
+        f'{url+USA_SEARCH}')
 
     WebDriverWait(browser, 300).until(EC.visibility_of_element_located(
         (By.CSS_SELECTOR, ".sku-property-item")))
