@@ -8,10 +8,17 @@ from selenium.webdriver.common.keys import Keys
 import re
 import time
 import os
+from selenium.webdriver.chrome.options import Options
+
 
 from webdriver_manager.chrome import ChromeDriverManager
 from typing import TypedDict
 
+chrome_options = Options()
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")  # linux only
+chrome_options.add_argument("--headless")
 
 class TextMatch(object):
     def __init__(self, locator, regexp):
@@ -48,7 +55,7 @@ class AliExpress:
         return f'{"{"}\nvariant:{self.variant}, \ndescriptionL{self.description}, \nvideo:{ self.video }, \nimages:{self.images} , \ntitle:{self.title},\n\n specification:{self.specification} {"}"}'
 
 
-def aliExtractor(url, browser: WebDriver = webdriver.Chrome(
+def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_options,
         service=Service(ChromeDriverManager().install()))) -> AliExpress:
 
     pattern_price = r"^[^-]*$"
@@ -138,9 +145,8 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(
             By.CSS_SELECTOR, ".property-desc")
         aliExpressData.specification.append(
             {title.text.split(':')[0]: value.text})
-
     # aliExpressData.video = video
-
+    browser.close()
     return aliExpressData
 
 
