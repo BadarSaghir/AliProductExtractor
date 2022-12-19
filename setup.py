@@ -61,7 +61,7 @@ setup(
 
     name='AliProductExtractor',
     packages=['AliProductExtractor'],
-    version='0.5',
+    version='0.6',
     license='MIT',
     description="It will get the product data from ali express",
     long_description=description,
