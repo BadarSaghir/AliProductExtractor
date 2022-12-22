@@ -42,6 +42,7 @@ class AliExpress:
     video: str
     images: list[str] = []
     specification: list[dict] = []
+    shipping = ''
 
     def __init__(self) -> None:
         self.description = ''
@@ -65,13 +66,14 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
     else:
         print("URL does not match the pattern. Please Provide Ali express product url")
         return aliExpressData
+    search = USA_SEARCH
     if default_location:
         pass
     else:
-        USA_SEARCH = ''
+        search = ''
 
     browser.get(
-        f'{url+USA_SEARCH}')
+        f'{url+search}')
 
     WebDriverWait(browser, 300).until(EC.visibility_of_element_located(
         (By.CSS_SELECTOR, ".sku-property-item")))
@@ -155,6 +157,11 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
             By.CSS_SELECTOR, ".property-desc")
         aliExpressData.specification.append(
             {title.text.split(':')[0]: value.text})
+    WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '#root > div > div.product-main > div > div.product-info > div.product-dynamic-shipping > div > div > div.dynamic-shipping-line.dynamic-shipping-titleLayout > span > span > strong')))
+    shipping = spec.find_element(
+        By.CSS_SELECTOR, "#root > div > div.product-main > div > div.product-info > div.product-dynamic-shipping > div > div > div.dynamic-shipping-line.dynamic-shipping-titleLayout > span > span > strong")
+    aliExpressData.shipping = shipping.text
     # aliExpressData.video = video
     browser.close()
     return aliExpressData
