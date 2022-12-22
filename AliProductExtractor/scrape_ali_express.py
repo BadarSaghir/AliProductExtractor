@@ -18,6 +18,8 @@ chrome_options.add_argument("--no-sandbox")  # linux only
 chrome_options.add_argument("--headless")
 
 USA_SEARCH = '?spm=a2g0o.detail.0.0.4e3048beiFDUoE&gps-id=pcDetailBottomMoreThisSeller&scm=1007.13339.291025.0&scm_id=1007.13339.291025.0&scm-url=1007.13339.291025.0&pvid=605d10f0-cf77-4b61-a51c-e4eaff32a7b2&_t=gps-id%3ApcDetailBottomMoreThisSeller%2Cscm-url%3A1007.13339.291025.0%2Cpvid%3A605d10f0-cf77-4b61-a51c-e4eaff32a7b2%2Ctpp_buckets%3A668%232846%238107%231934&pdp_ext_f=%7B"sku_id"%3A"12000025917204937"%2C"sceneId"%3A"3339"%7D&pdp_npi=2%40dis%21PKR%217770.36%215439.25%21%21%21%21%21%402101f6b516712770955781365e5cbb%2112000025917204937%21rec&gatewayAdapt=glo2usa4itemAdapt&_randl_shipto=US'
+
+
 class TextMatch(object):
     def __init__(self, locator, regexp):
         self.locator = locator
@@ -82,7 +84,11 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
     els = browser.find_elements(By.CSS_SELECTOR, '.sku-property-item')
     title = browser.find_element(By.CSS_SELECTOR, '.product-title-text').text
     aliExpressData.title = title
-
+    WebDriverWait(browser, 30).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '.dynamic-shipping-titleLayout span span')))
+    shipping = browser.find_element(
+        By.CSS_SELECTOR, ".dynamic-shipping-titleLayout span span")
+    aliExpressData.shipping = shipping.text
     for e in els:
         e.click()
         # time.sleep(5)
@@ -157,11 +163,7 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
             By.CSS_SELECTOR, ".property-desc")
         aliExpressData.specification.append(
             {title.text.split(':')[0]: value.text})
-    WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, '#root > div > div.product-main > div > div.product-info > div.product-dynamic-shipping > div > div > div.dynamic-shipping-line.dynamic-shipping-titleLayout > span > span > strong')))
-    shipping = spec.find_element(
-        By.CSS_SELECTOR, "#root > div > div.product-main > div > div.product-info > div.product-dynamic-shipping > div > div > div.dynamic-shipping-line.dynamic-shipping-titleLayout > span > span > strong")
-    aliExpressData.shipping = shipping.text
+
     # aliExpressData.video = video
     browser.close()
     return aliExpressData
