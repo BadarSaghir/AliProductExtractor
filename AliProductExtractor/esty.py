@@ -126,7 +126,8 @@ class AExpressToEtsy:
         WebDriverWait(driver, 300).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "#taxonomy-search")))
         driver.find_element(
-            By.CSS_SELECTOR, '#taxonomy-search').send_keys(ali.title)
+            By.CSS_SELECTOR, '#taxonomy-search').send_keys(re.sub('[^A-Za-z0-9]+', '', ali.title)
+                                                           )
 
         WebDriverWait(driver, 300).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "#taxonomy-search-results-option-0")))
@@ -139,12 +140,29 @@ class AExpressToEtsy:
             By.CSS_SELECTOR, '#who_made-input').click()
         driver.find_element(
             By.CSS_SELECTOR, '#who_made-input > optgroup > option:nth-child(3)').click()
+        WebDriverWait(driver, 300).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "#is_supply-input")))
+        driver.find_element(
+            By.CSS_SELECTOR, '#is_supply-input').click()
+        driver.find_element(
+            By.CSS_SELECTOR, '#is_supply-input > optgroup > option:nth-child(1)').click()
+        WebDriverWait(driver, 300).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "#when_made-input")))
+        driver.find_element(
+            By.CSS_SELECTOR, '#when_made-input').click()
+        driver.find_element(
+            By.CSS_SELECTOR, '#when_made-input > optgroup:nth-child(3) > option:nth-child(1)').click()
+
+        WebDriverWait(driver, 300).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "#description-text-area-input")))
         driver.find_element(
             By.CSS_SELECTOR, '#description-text-area-input').send_keys(ali.description)
         driver.find_element(
-            By.CSS_SELECTOR, '#description-text-area-input').send_keys(ali.price)
+            By.CSS_SELECTOR, '#price_retail-input').send_keys(str(ali.price))
+        WebDriverWait(driver, 300).until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#add_variations_button")))
         driver.find_element(
-            By.CSS_SELECTOR, '#variations-component > div > div > div > div > span').click()
+            By.CSS_SELECTOR, '#add_variations_button').click()
         WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
             (By.CSS_SELECTOR, "#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div > div > label > select")))
         driver.find_element(
@@ -154,19 +172,19 @@ class AExpressToEtsy:
         driver.find_element(
             By.CSS_SELECTOR, '#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div > div > label > select > optgroup:nth-child(3)').click()
         WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, "#undefined-input")))
+            (By.CSS_SELECTOR, "#wt-modal-container input")))
         driver.find_element(
-            By.CSS_SELECTOR, '#undefined-input').send_keys(ali.variant_title)
+            By.CSS_SELECTOR, '#wt-modal-container input').send_keys(ali.variant_title)
 
         driver.find_element(
-            By.CSS_SELECTOR, ' #wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div > div > div > div.input-group-btn > button').click()
+            By.CSS_SELECTOR, ' #wt-modal-container button').click()
         for variant in ali.variant:
             WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, "#undefined-input")))
+                (By.CSS_SELECTOR, "#wt-modal-container input")))
             driver.find_element(
-                By.CSS_SELECTOR, '#undefined-input').send_keys(variant["name"])
+                By.CSS_SELECTOR, '#wt-modal-container .input-group-body input').send_keys(variant["name"])
             driver.find_element(
-                By.CSS_SELECTOR, '#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-offset-md-1.col-lg-5.col-offset-lg-2.mt-xs-2.mt-sm-0 > div:nth-child(1) > div > div.input-group-btn > button').click()
+                By.CSS_SELECTOR, '#wt-modal-container .input-group-btn button').click()
         driver.find_element(
             By.CSS_SELECTOR, "#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-md-5 > div.mt-xs-4 > div:nth-child(1) > label > input").click()
 
@@ -188,18 +206,21 @@ class AExpressToEtsy:
 if __name__ == "__main__":
     os.environ['WDM_LOG_LEVEL'] = '0'
     os.environ['WDM_LOCAL'] = '1'
+    driver: WebDriver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()))
     # url = 'https://www.aliexpress.us/item/3256804136971215.html'
     url = 'https://www.aliexpress.us/item/3256804136971215.html'
 
-    [ali, driver] = aliExtractor(url)
+    [ali, driver] = aliExtractor(url, driver)
+    print(ali.variant_title, ali.variant)
 
     # ali = {'images': ["https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png",
     #                   "https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png"]}
-    ali.images = ["https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png",
-                  "https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png"]
-    ali.video = "https://video.aliexpress-media.com/play/u/ae_sg_item/17381167788/p/1/e/6/t/10301/1100063275440.mp4"
+    # ali.images = ["https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png",
+    #               "https://ae01.alicdn.com/kf/S2f4257ea5ff745918980d97f5c7bb8c7G/Dec-Super-Sale-Xiaomi-RedmiBook-Pro-15-2022-Laptop-Ryzen-R7-6800H-R5-6600H-AMD.png"]
+    # ali.video = "https://video.aliexpress-media.com/play/u/ae_sg_item/17381167788/p/1/e/6/t/10301/1100063275440.mp4"
     data = AExpressToEtsy(username="locivej993@khaxan.com",
-                          password="dL6ykWgp83S").product_uploader(ali)
+                          password="dL6ykWgp83S").product_uploader(ali, driver)
     print(data)
 
     # getFileUrl(ali, '0.png')
