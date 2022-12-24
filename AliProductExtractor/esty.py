@@ -173,19 +173,19 @@ class AExpressToEtsy:
         driver.find_element(
             By.CSS_SELECTOR, '#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div > div > label > select > optgroup:nth-child(3)').click()
         WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, "#wt-modal-container input")))
+            (By.CSS_SELECTOR, '//*[@id="undefined-input"]')))
         driver.find_element(
-            By.CSS_SELECTOR, '#wt-modal-container input').send_keys(ali.variant_title)
+            By.CSS_SELECTOR, '//*[@id="undefined-input"]').send_keys(ali.variant_title.lower())
 
         driver.find_element(
             By.CSS_SELECTOR, ' #wt-modal-container button').click()
         for variant in ali.variant:
             WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, "#wt-modal-container input")))
+                (By.CSS_SELECTOR, "#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-offset-md-1.col-lg-5.col-offset-lg-2.mt-xs-2.mt-sm-0 > div:nth-child(1) > div > div.input-group-body > div input")))
             driver.find_element(
-                By.CSS_SELECTOR, '#wt-modal-container .input-group-body input').send_keys(variant["name"])
+                By.CSS_SELECTOR, '#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-offset-md-1.col-lg-5.col-offset-lg-2.mt-xs-2.mt-sm-0 > div:nth-child(1) > div > div.input-group-body > div input').send_keys(variant["name"])
             driver.find_element(
-                By.CSS_SELECTOR, '#wt-modal-container .input-group-btn button').click()
+                By.CSS_SELECTOR, '#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-offset-md-1.col-lg-5.col-offset-lg-2.mt-xs-2.mt-sm-0 > div:nth-child(1) > div > div.input-group-btn button').click()
         driver.find_element(
             By.CSS_SELECTOR, "#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div:nth-child(2) > div.col-sm-6.col-md-5 > div.mt-xs-4 > div:nth-child(1) > label > input").click()
 
