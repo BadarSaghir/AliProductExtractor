@@ -75,6 +75,7 @@ setup(
     install_requires=[
         'selenium',
         'webdriver_manager',
+        'moviepy',
         'Pillow'
 
     ],

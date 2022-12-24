@@ -46,6 +46,8 @@ class AliExpress:
     images: list[str] = []
     specification: list[dict] = []
     shipping = ''
+    price = 0.22
+    variant_title = ''
 
     def __init__(self) -> None:
         self.description = ''
@@ -90,6 +92,10 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
     shipping = browser.find_element(
         By.CSS_SELECTOR, ".dynamic-shipping-titleLayout span span")
     aliExpressData.shipping = shipping.text
+    WebDriverWait(browser, 300).until(EC.presence_of_element_located(
+        (By.CSS_SELECTOR, ".sku-title")))
+    aliExpressData.variant_title = browser.find_element(
+        By.CSS_SELECTOR, '.sku-title').text.split(":")[0]
     for e in els:
         e.click()
         # time.sleep(5)
@@ -101,6 +107,9 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
             (By.CSS_SELECTOR, ".sku-title-value")))
         _name = browser.find_element(
             By.CSS_SELECTOR, '.sku-title-value')
+
+
+
         variant: Variant = {
             'price': price.text.split("$")[1],
             'name': _name.text
