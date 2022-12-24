@@ -73,9 +73,9 @@ setup(
     keywords=['Ali express', 'Ali  express product',
               'Ali express product scraper', 'scraper Ali express', 'scraper', 'extractor'],
     install_requires=[
-        'selenium==4.0.0a1',
-        'webdriver_manager==3.8.5',
-        ''
+        'selenium',
+        'webdriver_manager',
+        'Pillow'
 
     ],
     classifiers=[
