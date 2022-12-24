@@ -11,12 +11,17 @@ import os
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from typing import TypedDict
-chrome_options = Options()
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")  # linux only
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
+
+
+def headless_chrome_option():
+    chrome_options = Options()
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")  # linux only
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    return chrome_options
+
 
 USA_SEARCH = '?spm=a2g0o.detail.0.0.4e3048beiFDUoE&gps-id=pcDetailBottomMoreThisSeller&scm=1007.13339.291025.0&scm_id=1007.13339.291025.0&scm-url=1007.13339.291025.0&pvid=605d10f0-cf77-4b61-a51c-e4eaff32a7b2&_t=gps-id%3ApcDetailBottomMoreThisSeller%2Cscm-url%3A1007.13339.291025.0%2Cpvid%3A605d10f0-cf77-4b61-a51c-e4eaff32a7b2%2Ctpp_buckets%3A668%232846%238107%231934&pdp_ext_f=%7B"sku_id"%3A"12000025917204937"%2C"sceneId"%3A"3339"%7D&pdp_npi=2%40dis%21PKR%217770.36%215439.25%21%21%21%21%21%402101f6b516712770955781365e5cbb%2112000025917204937%21rec&gatewayAdapt=glo2usa&_randl_shipto=US'
 
@@ -59,7 +64,7 @@ class AliExpress:
         return f'{"{"}\nvariant:{self.variant}, \ndescriptionL{self.description}, \nvideo:{ self.video }, \nimages:{self.images} , \ntitle:{self.title},\n\n specification:{self.specification} {"}"}'
 
 
-def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_options,
+def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=headless_chrome_option(),
                                                             service=Service(ChromeDriverManager().install())), default_location=True) -> list[AliExpress, WebDriver]:
     # print("started....")
     pattern_price = r"^[^-]*$"
@@ -87,7 +92,7 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
     els = browser.find_elements(By.CSS_SELECTOR, '.sku-property-item')
     title = browser.find_element(By.CSS_SELECTOR, '.product-title-text').text
     aliExpressData.title = title
-    WebDriverWait(browser, 30).until(
+    WebDriverWait(browser, 50).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '.dynamic-shipping-titleLayout span span')))
     shipping = browser.find_element(
         By.CSS_SELECTOR, ".dynamic-shipping-titleLayout span span")
@@ -107,8 +112,6 @@ def aliExtractor(url, browser: WebDriver = webdriver.Chrome(options=chrome_optio
             (By.CSS_SELECTOR, ".sku-title-value")))
         _name = browser.find_element(
             By.CSS_SELECTOR, '.sku-title-value')
-
-
 
         variant: Variant = {
             'price': price.text.split("$")[1],

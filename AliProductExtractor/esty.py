@@ -121,12 +121,12 @@ class AExpressToEtsy:
         WebDriverWait(driver, 300).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "#title-input")))
         driver.find_element(
-            By.CSS_SELECTOR, '#title-input').send_keys(ali.title)
+            By.CSS_SELECTOR, '#title-input').send_keys(re.sub('[^A-Za-z0-9]+', ' ', ali.title))
 
         WebDriverWait(driver, 300).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "#taxonomy-search")))
         driver.find_element(
-            By.CSS_SELECTOR, '#taxonomy-search').send_keys(re.sub('[^A-Za-z0-9]+', '', ali.title)
+            By.CSS_SELECTOR, '#taxonomy-search').send_keys(re.sub('[^A-Za-z0-9]+', ' ', ali.title)
                                                            )
 
         WebDriverWait(driver, 300).until(EC.presence_of_element_located(
@@ -159,10 +159,11 @@ class AExpressToEtsy:
             By.CSS_SELECTOR, '#description-text-area-input').send_keys(ali.description)
         driver.find_element(
             By.CSS_SELECTOR, '#price_retail-input').send_keys(str(ali.price))
-        WebDriverWait(driver, 300).until(EC.element_to_be_clickable(
+        WebDriverWait(driver, 300).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "#add_variations_button")))
-        driver.find_element(
-            By.CSS_SELECTOR, '#add_variations_button').click()
+        btn = driver.find_element(
+            By.CSS_SELECTOR, '#add_variations_button')
+        driver.execute_script("arguments[0].click();", btn)
         WebDriverWait(driver, 300).until(EC.visibility_of_element_located(
             (By.CSS_SELECTOR, "#wt-modal-container > div.wt-overlay.wt-overlay--will-animate.wt-overlay--large > div > div:nth-child(2) > div > div > label > select")))
         driver.find_element(
